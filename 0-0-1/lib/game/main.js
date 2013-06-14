@@ -6,8 +6,11 @@ ig.module(
 	'impact.font',
 	
 	'game.entities.paddle',
+	'game.entities.ball',
+	'game.entities.enemy',
 	
-	'game.levels.main'
+	'game.levels.main',
+	'game.levels.test'
 )
 .defines(function(){
 
@@ -15,7 +18,7 @@ MyGame = ig.Game.extend({
 	
 	// Load a font
 	font: new ig.Font( 'media/04b03.font.png' ),
-	
+	font_victory: new ig.Font( 'media/04b03.font.png' ),
 	
 	init: function() {
 		// Initialize your game here; bind keys etc.
@@ -24,6 +27,7 @@ MyGame = ig.Game.extend({
 		
 		ig.input.initMouse();
 		this.loadLevel( LevelMain );
+		//this.loadLevel( LevelTest );
 	},
 	
 	update: function() {
@@ -36,7 +40,7 @@ MyGame = ig.Game.extend({
 		
 		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
 		
-		if (numBalls < 1){
+		if (numBalls < 1 && !this.victory){
 			this.spawnEntity( 'EntityBall',  paddle.pos.x, paddle.pos.y - 50)
 		}else{
 			for (var i = 0; i < numBalls; i++){
@@ -52,7 +56,32 @@ MyGame = ig.Game.extend({
 	draw: function() {
 		// Draw all entities and backgroundMaps
 		this.parent();
+		//this.font.draw( "Hello World", 0, 400);
 		
+		if (this.victory) {
+			this.font_victory.draw( "victory", 500, 500, ig.Font.ALIGN.RIGHT );
+		}
+		
+	},
+	
+	checkVictory: function() {
+		var enemies = ig.game.getEntitiesByType( 'EntityEnemy' );
+		var numEnemies = enemies.length;
+		
+		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
+		var ball = ig.game.getEntitiesByType( EntityBall )[0];
+		
+		if (enemies <= 0) {
+			var font_x = paddle.pos.x;
+			var font_y = paddle.pos.y;
+			
+			paddle.kill();
+			ball.vel.x = 0;
+			ball.vel.y = 0;
+			
+			ball.kill();
+			this.victory = true;
+		}
 	}
 });
 
