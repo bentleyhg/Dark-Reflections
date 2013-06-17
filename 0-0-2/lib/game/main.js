@@ -82,22 +82,6 @@ MyGame = ig.Game.extend({
 			ball.kill();
 			this.victory = true;
 		}
-	},
-	
-	checkDefeat: function() {
-		var village = ig.game.getEntitiesByType( 'EntityVillage' )[0];
-		
-		if (village.health <= 0) {
-			var font_x = paddle.pos.x;
-			var font_y = paddle.pos.y;
-			
-			paddle.kill();
-			ball.vel.x = 0;
-			ball.vel.y = 0;
-			
-			ball.kill();
-			this.defeat = true;
-		}
 	}
 });
 
