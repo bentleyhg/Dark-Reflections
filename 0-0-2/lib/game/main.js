@@ -19,6 +19,7 @@ MyGame = ig.Game.extend({
 	// Load a font
 	font: new ig.Font( 'media/04b03.font.png' ),
 	font_victory: new ig.Font( 'media/04b03.font.png' ),
+	defeat: false,
 	
 	init: function() {
 		// Initialize your game here; bind keys etc.
@@ -26,13 +27,8 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
 		
 		ig.input.initMouse();
-<<<<<<< HEAD
-		//this.loadLevel( LevelMain );
-		this.loadLevel( LevelTest );
-=======
 		this.loadLevel( LevelMain );
 		//this.loadLevel( LevelTest );
->>>>>>> de6328a178ed32f5c44747ddbf6a4d7f54f8d789
 	},
 	
 	update: function() {
@@ -45,71 +41,52 @@ MyGame = ig.Game.extend({
 		
 		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
 		
-		if (numBalls < 1 && !this.victory){
-			this.spawnEntity( 'EntityBall',  paddle.pos.x, paddle.pos.y - 50)
-		}else{
-			for (var i = 0; i < numBalls; i++){
-				var ball = ig.game.getEntitiesByType( EntityBall )[i];
-				
-				if (ball.pos.y + ball.size.y/2 > 550 ){
-					ball.kill();
-				}	
-			}
+		if (numBalls < 1 && !this.victory && !this.defeat){
+			ig.game.spawnEntity( 'EntityBall',  paddle.pos.x, paddle.pos.y - 50);			
 		}
 	},
 	
 	draw: function() {
 		// Draw all entities and backgroundMaps
 		this.parent();
-<<<<<<< HEAD
 		this.font.draw( "Hello World", 0, 400);
-=======
-		//this.font.draw( "Hello World", 0, 400);
->>>>>>> de6328a178ed32f5c44747ddbf6a4d7f54f8d789
 		
 		if (this.victory) {
 			this.font_victory.draw( "victory", 500, 500, ig.Font.ALIGN.RIGHT );
 		}
 		
+		if (this.defeat) {
+			this.font_victory.draw( "You have been defeated", 500, 500, ig.Font.ALIGN.RIGHT );
+		}
 	},
 	
 	checkVictory: function() {
 		var enemies = ig.game.getEntitiesByType( 'EntityEnemy' );
 		var numEnemies = enemies.length;
 		
-		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
-		var ball = ig.game.getEntitiesByType( EntityBall )[0];
-		
 		if (enemies <= 0) {
-			var font_x = paddle.pos.x;
-			var font_y = paddle.pos.y;
-			
+			var paddle = this.getEntitiesByType( 'EntityPaddle' ) [0];
+			var balls = this.getEntitiesByType( 'EntityBall' );
+		
 			paddle.kill();
-			ball.vel.x = 0;
-			ball.vel.y = 0;
-			
-			ball.kill();
+			for (var i = 0; i < balls.length; i++){
+				balls[i].kill();
+			}	
 			this.victory = true;
 		}
-<<<<<<< HEAD
-=======
+		
+		
 	},
 	
-	checkDefeat: function() {
-		var village = ig.game.getEntitiesByType( 'EntityVillage' )[0];
+	setDefeat: function() {
+		var paddle = this.getEntitiesByType( 'EntityPaddle' ) [0];
+		var balls = this.getEntitiesByType( 'EntityBall' );
 		
-		if (village.health <= 0) {
-			var font_x = paddle.pos.x;
-			var font_y = paddle.pos.y;
-			
-			paddle.kill();
-			ball.vel.x = 0;
-			ball.vel.y = 0;
-			
-			ball.kill();
-			this.defeat = true;
+		paddle.kill();
+		for (var i = 0; i < balls.length; i++){
+			balls[i].kill();
 		}
->>>>>>> de6328a178ed32f5c44747ddbf6a4d7f54f8d789
+		this.defeat = true;
 	}
 });
 
