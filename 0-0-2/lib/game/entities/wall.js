@@ -9,7 +9,7 @@ ig.module(
 EntityWall = ig.Entity.extend({
 	
 	size: {x:4, y:4},
-	collides: ig.Entity.COLLIDES.ACTIVE,
+	collides: ig.Entity.COLLIDES.FIXED,
 	
 	animSheet: new ig.AnimationSheet( 'media/Wall_Mk1.png', 4, 4 ),
 	

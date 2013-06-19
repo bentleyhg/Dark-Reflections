@@ -11,6 +11,7 @@ EntityEnemy= ig.Entity.extend({
 	health: 1,
         collides: ig.Entity.COLLIDES.FIXED,
 	dmgAnim: 0,
+	FP_Reward: 0,
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
@@ -32,9 +33,20 @@ EntityEnemy= ig.Entity.extend({
 	
 	collideWith: function( other, axis ) {
             if( other instanceof EntityBall ){
-                this.receiveDamage(1);
+		// set damage animation
 		this.currentAnim = this.anims.damage.rewind();
 		this.dmgAnim = 10;
+		
+		// Spawn Floaty Text displaying exp reward if this enemy is about to
+		// die
+		
+		if (this.health == 1){
+			ig.game.spawnEntity( 'EntityText_Floating',  this.pos.x , this.pos.y);
+			var myFloater = ig.game.entities[ig.game.entities.length -1];
+			myFloater.displayTxt = this.FP_Reward.toString();
+		}
+		
+		this.receiveDamage(1);
 		ig.game.checkVictory();
             }
         }

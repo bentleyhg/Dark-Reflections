@@ -26,13 +26,12 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
 		
 		ig.input.initMouse();
-<<<<<<< HEAD
+
 		//this.loadLevel( LevelMain );
 		this.loadLevel( LevelTest );
-=======
+
 		this.loadLevel( LevelMain );
 		//this.loadLevel( LevelTest );
->>>>>>> de6328a178ed32f5c44747ddbf6a4d7f54f8d789
 	},
 	
 	update: function() {
@@ -61,11 +60,8 @@ MyGame = ig.Game.extend({
 	draw: function() {
 		// Draw all entities and backgroundMaps
 		this.parent();
-<<<<<<< HEAD
 		this.font.draw( "Hello World", 0, 400);
-=======
 		//this.font.draw( "Hello World", 0, 400);
->>>>>>> de6328a178ed32f5c44747ddbf6a4d7f54f8d789
 		
 		if (this.victory) {
 			this.font_victory.draw( "victory", 500, 500, ig.Font.ALIGN.RIGHT );
@@ -91,8 +87,7 @@ MyGame = ig.Game.extend({
 			ball.kill();
 			this.victory = true;
 		}
-<<<<<<< HEAD
-=======
+
 	},
 	
 	checkDefeat: function() {
@@ -109,7 +104,6 @@ MyGame = ig.Game.extend({
 			ball.kill();
 			this.defeat = true;
 		}
->>>>>>> de6328a178ed32f5c44747ddbf6a4d7f54f8d789
 	}
 });
 

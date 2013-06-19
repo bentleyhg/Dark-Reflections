@@ -8,7 +8,7 @@ ig.module(
 	'game.entities.paddle',
 	'game.entities.ball',
 	'game.entities.enemy',
-	
+	'game.entities.Text_Floating',
 	'game.levels.main',
 	'game.levels.test'
 )
@@ -42,14 +42,22 @@ MyGame = ig.Game.extend({
 		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
 		
 		if (numBalls < 1 && !this.victory && !this.defeat){
-			ig.game.spawnEntity( 'EntityBall',  paddle.pos.x, paddle.pos.y - 50);			
+			ig.game.spawnEntity( 'EntityBall',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
+			var newBall = this.entities[this.entities.length -1];
+			
+			if (newBall.pos.x < 0){
+				newBall.pos.x += 50;
+			}
+			
+			if (newBall.pos.x > ig.system.width - 50) {
+				newBall.pos.x -= 100;
+			}
 		}
 	},
 	
 	draw: function() {
 		// Draw all entities and backgroundMaps
 		this.parent();
-		this.font.draw( "Hello World", 0, 400);
 		
 		if (this.victory) {
 			this.font_victory.draw( "victory", 500, 500, ig.Font.ALIGN.RIGHT );

@@ -14,17 +14,25 @@ EntityBall = ig.Entity.extend({
 	animSheet: new ig.AnimationSheet( 'media/Ball_Fire1_Mk1.png', 30, 30 ),
 	
 	bounciness: 1,
+	base_vel: 300,
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 		
 		this.addAnim( 'idle', 0.05, [0, 1, 2, 3] );
                 
-                this.maxVel.x = 500;
-                this.maxVel.y = 500;
+                this.maxVel.x = 600;
+                this.maxVel.y = 600;
                 
-                this.vel.x = 300;
-		this.vel.y = 300;
+                this.vel.x = this.base_vel;
+		this.vel.y = this.base_vel;
+	},
+	
+	update: function() {
+		this.parent();
+		
+		this.vel.x += (this.vel.x * 0.001);
+		this.vel.y += (this.vel.y * 0.001);
 	}
 });
 
