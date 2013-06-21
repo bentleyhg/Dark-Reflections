@@ -2,8 +2,7 @@ ig.module(
 	'game.entities.village'
 )
 .requires(
-	'impact.entity',
-	'game.entities.Btn_Spell'
+	'impact.entity'
 )
 .defines(function(){
 
@@ -25,7 +24,13 @@ EntityVillage = ig.Entity.extend({
 	
 	collideWith: function( other, axis ) {
             if( other instanceof EntityBall ){
-                this.receiveDamage(1);
+                // Spawn Floaty Text displaying damage taken
+		
+		ig.game.spawnEntity( 'EntityText_Floating',  other.pos.x, other.pos.y -20);
+		var myFloater = ig.game.entities[ig.game.entities.length -1];
+		myFloater.displayTxt = other.dmg.toString();
+		
+		this.receiveDamage(other.dmg);
 		other.kill();
             }
         },

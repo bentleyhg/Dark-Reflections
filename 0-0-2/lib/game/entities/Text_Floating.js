@@ -9,11 +9,13 @@ ig.module(
 EntityText_Floating = ig.Entity.extend({
 	
 	size: {x:170, y:30},
-	font: new ig.Font( 'media/CrystalWarriors.font.png' ),
+	font_default: new ig.Font( 'media/CrystalWarriors.font.png' ),
+	font_green: new ig.Font( 'media/CrystalWarriors-green.font.png' ),
 	collides: ig.Entity.COLLIDES.NEVER,
 	start_y: 0,
 	lifespan: 50,
 	displayTxt: "999",
+	currentFont: this.font_default,
 	
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
@@ -21,6 +23,7 @@ EntityText_Floating = ig.Entity.extend({
 		this.start_y = y;
                 this.maxVel.y = 300;
 		this.vel.y = -50;
+		this.currentFont = this.font_default;
 	},
 	
 	update: function() {
@@ -31,7 +34,7 @@ EntityText_Floating = ig.Entity.extend({
 	draw: function() {
 		// Draw all entities and backgroundMaps
 		this.parent();
-		this.font.draw( this.displayTxt, this.pos.x, this.pos.y);
+		this.currentFont.draw( this.displayTxt, this.pos.x, this.pos.y);
 	},
 	
 	distanceMoved: function(){

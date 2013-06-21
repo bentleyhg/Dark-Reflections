@@ -7,6 +7,7 @@ ig.module(
 	
 	'game.entities.paddle',
 	'game.entities.ball',
+	'game.entities.ball_Spell_Fire1',
 	'game.entities.enemy',
 	'game.entities.Text_Floating',
 	'game.levels.main',
@@ -25,6 +26,7 @@ MyGame = ig.Game.extend({
 		// Initialize your game here; bind keys etc.
 		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
+		ig.input.bind( ig.KEY._1, 'Spell_1' );
 		
 		ig.input.initMouse();
 		this.loadLevel( LevelMain );
@@ -35,14 +37,18 @@ MyGame = ig.Game.extend({
 		// Update all entities and backgroundMaps
 		this.parent();
 		
+		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
+		
+		if( ig.input.pressed('Spell_1') ) {
+			this.spawnEntity( 'EntityBall_Spell_Fire1',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
+		}
+		
 		// Add your own, additional update code here
 		var balls = ig.game.getEntitiesByType( 'EntityBall' );
 		var numBalls = balls.length;
 		
-		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
-		
 		if (numBalls < 1 && !this.victory && !this.defeat){
-			ig.game.spawnEntity( 'EntityBall',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
+			this.spawnEntity( 'EntityBall',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
 			var newBall = this.entities[this.entities.length -1];
 			
 			if (newBall.pos.x < 0){
