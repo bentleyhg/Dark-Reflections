@@ -17,7 +17,7 @@ EntityBall_Spell_Fire1 = EntityBall.extend({
 		this.parent( x, y, settings );
 		
 		this.currentAnim = null;
-		this.addAnim( 'idle', 0.01, [0, 1 , 2, 3] );
+		this.addAnim( 'idle', 0.025, [0, 1 , 2, 3] );
                 
                 this.maxVel.x = 600;
                 this.maxVel.y = 600;

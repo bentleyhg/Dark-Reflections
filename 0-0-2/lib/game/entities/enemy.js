@@ -33,7 +33,11 @@ EntityEnemy= ig.Entity.extend({
 	},
 	
 	kill: function() {
-		// Spawn Floaty Text displaying exp reward if this enemy has been defeated
+		// Reward player with FP reward
+		
+		ig.game.Player.Faith_Current += this.FP_Reward;
+		
+		// Spawn Floaty Text displaying FP reward
 		ig.game.spawnEntity( 'EntityText_Floating',  this.pos.x , this.pos.y + 50);
 		var myFloater = ig.game.entities[ig.game.entities.length -1];
 		myFloater.currentFont = myFloater.font_green;

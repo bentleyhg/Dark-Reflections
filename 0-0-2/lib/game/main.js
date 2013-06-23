@@ -5,6 +5,7 @@ ig.module(
 	'impact.game',
 	'impact.font',
 	
+	'game.entities.player',
 	'game.entities.paddle',
 	'game.entities.ball',
 	'game.entities.ball_Spell_Fire1',
@@ -18,9 +19,14 @@ ig.module(
 MyGame = ig.Game.extend({
 	
 	// Load a font
-	font: new ig.Font( 'media/04b03.font.png' ),
+	Player: null,
+	
+	font1: new ig.Font( 'media/04b03.font.png' ),
+	font2: new ig.Font( 'media/04b03.font.png' ),
+	font3: new ig.Font( 'media/04b03.font.png' ),
 	font_victory: new ig.Font( 'media/04b03.font.png' ),
 	defeat: false,
+	
 	
 	init: function() {
 		// Initialize your game here; bind keys etc.
@@ -31,6 +37,9 @@ MyGame = ig.Game.extend({
 		ig.input.initMouse();
 		this.loadLevel( LevelMain );
 		//this.loadLevel( LevelTest );
+		
+		// Initialize Player Entity
+		this.Player = this.spawnEntity("EntityPlayer", -50, 0);
 	},
 	
 	update: function() {
@@ -39,11 +48,16 @@ MyGame = ig.Game.extend({
 		
 		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
 		
+		// Launch a Fireball spell if player presses the Spell_1 button
 		if( ig.input.pressed('Spell_1') ) {
-			this.spawnEntity( 'EntityBall_Spell_Fire1',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
+			if (this.Player.Divinity_Current > 0){
+				this.spawnEntity( 'EntityBall_Spell_Fire1',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
+				this.Player.Divinity_Current -= 1;
+			}
+			
 		}
 		
-		// Add your own, additional update code here
+		// Check to make sure there is at least one ball in play, spawn a new one if not
 		var balls = ig.game.getEntitiesByType( 'EntityBall' );
 		var numBalls = balls.length;
 		
@@ -59,6 +73,11 @@ MyGame = ig.Game.extend({
 				newBall.pos.x -= 100;
 			}
 		}
+		
+		// Update Meters
+		var p = this.Player
+		p.faithMeter.currentVal = p.Faith_Current;
+		p.divinityMeter.currentVal = p.Divinity_Current;
 	},
 	
 	draw: function() {
