@@ -9,6 +9,7 @@ ig.module(
 	'game.entities.paddle',
 	'game.entities.ball',
 	'game.entities.ball_Spell_Fire1',
+	'game.entities.button',
 	'game.entities.enemy',
 	'game.entities.Text_Floating',
 	'game.levels.main',
@@ -25,6 +26,7 @@ MyGame = ig.Game.extend({
 	font2: new ig.Font( 'media/04b03.font.png' ),
 	font3: new ig.Font( 'media/04b03.font.png' ),
 	font_victory: new ig.Font( 'media/04b03.font.png' ),
+	Btn_Reset: null,
 	defeat: false,
 	
 	
@@ -34,12 +36,20 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
 		ig.input.bind( ig.KEY._1, 'Spell_1' );
 		
+		ig.input.bind(ig.KEY.MOUSE1, 'checkClick');
+		
 		ig.input.initMouse();
+		
+		this.initLevel();
+	},
+	
+	initLevel: function() {
 		this.loadLevel( LevelMain );
 		//this.loadLevel( LevelTest );
 		
-		// Initialize Player Entity
 		this.Player = this.spawnEntity("EntityDeity", -50, 0);
+		this.defeat = false;
+		this.victory = false;
 	},
 	
 	update: function() {
@@ -55,6 +65,14 @@ MyGame = ig.Game.extend({
 				this.Player.Divinity_Current -= 1;
 			}
 			
+		}
+		
+		var buttons = ig.game.getEntitiesByType( 'EntityButton');
+		
+		if( ig.input.pressed('checkClick')) {
+			for(var i = 0; i < buttons.length; i++){
+				buttons[i].wasClicked();
+			}
 		}
 		
 		// Check to make sure there is at least one ball in play, spawn a new one if not
@@ -85,11 +103,12 @@ MyGame = ig.Game.extend({
 		this.parent();
 		
 		if (this.victory) {
-			this.font_victory.draw( "victory", 500, 500, ig.Font.ALIGN.RIGHT );
+			this.font_victory.draw( "victory", 400, 500, ig.Font.ALIGN.RIGHT );
+			
 		}
 		
 		if (this.defeat) {
-			this.font_victory.draw( "You have been defeated", 500, 500, ig.Font.ALIGN.RIGHT );
+			this.font_victory.draw( "You have been defeated", 400, 500, ig.Font.ALIGN.RIGHT );
 		}
 	},
 	
@@ -98,28 +117,38 @@ MyGame = ig.Game.extend({
 		var numEnemies = enemies.length;
 		
 		if (enemies <= 0) {
-			var paddle = this.getEntitiesByType( 'EntityPaddle' ) [0];
-			var balls = this.getEntitiesByType( 'EntityBall' );
-		
-			paddle.kill();
-			for (var i = 0; i < balls.length; i++){
-				balls[i].kill();
-			}	
 			this.victory = true;
+			this.endLevel();
 		}
-		
-		
 	},
 	
+	
+	
 	setDefeat: function() {
+		this.defeat = true;
+		this.endLevel();
+	},
+	
+	endLevel: function() {
+		
+		// clear away the paddle and ball
 		var paddle = this.getEntitiesByType( 'EntityPaddle' ) [0];
 		var balls = this.getEntitiesByType( 'EntityBall' );
-		
+	
 		paddle.kill();
 		for (var i = 0; i < balls.length; i++){
 			balls[i].kill();
 		}
-		this.defeat = true;
+		
+		// reinitialize the player entity
+		this.Player = null;
+		this.Player = this.spawnEntity("EntityDeity", -50, 0);
+		
+		this.Btn_Reset = this.spawnEntity( 'EntityButton',  550, 450);
+		this.Btn_Reset.displayTxt = "Reset";
+		this.Btn_Reset.btnAction = function(){
+			ig.game.initLevel();
+		};
 	}
 });
 

@@ -26,13 +26,21 @@ EntityDeity = ig.Entity.extend({
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 		
+		this.setFaithMeter();
+		this.setDivinityMeter();
+		
+		
+	},
+	
+	setFaithMeter: function() {
 		// Initialize Faith Meter UI
 		this.faithMeter = ig.game.spawnEntity( 'EntityUI_FaithMeter', 524, 664 );
 		this.faithMeter = ig.game.getEntitiesByType( 'EntityUI_FaithMeter' ) [0];
 		this.faithMeter.maxVal = this.Faith_Goal;
 		this.faithMeter.currentVal = this.Faith_Current;
-		
-		
+	},
+	
+	setDivinityMeter: function() {
 		// Initialize Divinity Meter UI
 		this.divinityMeter = ig.game.spawnEntity( 'EntityUI_DivinityMeter', 524, 716 );
 		this.divinityMeter = ig.game.getEntitiesByType( 'EntityUI_DivinityMeter' ) [0];
