@@ -12,7 +12,7 @@ EntityUI_DivinityMeter = EntityUI_Meter.extend({
 	containerImg: new ig.Image( 'media/UI_FaithMeter_iPad_Container.png' ),
 	
 	maxVal: 5,
-	currentVal: 5,
+	currentVal: 5
 	
 });
 

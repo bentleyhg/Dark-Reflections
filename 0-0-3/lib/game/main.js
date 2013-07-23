@@ -7,10 +7,13 @@ ig.module(
 	
 	'game.entities.deity',
 	'game.entities.paddle',
+	'game.entities.UI_Battle',
 	'game.entities.ball',
 	'game.entities.ball_Spell_Fire1',
+	'game.entities.Btn_Spell',
 	'game.entities.button',
 	'game.entities.enemy',
+	'game.entities.village',
 	'game.entities.Text_Floating',
 	'game.levels.main',
 	'game.levels.test'
@@ -21,6 +24,8 @@ MyGame = ig.Game.extend({
 	
 	// Load a font
 	Player: null,
+	Paddle: null,
+	UI: null,
 	
 	font1: new ig.Font( 'media/04b03.font.png' ),
 	font2: new ig.Font( 'media/04b03.font.png' ),
@@ -35,6 +40,7 @@ MyGame = ig.Game.extend({
 		ig.input.bind( ig.KEY.LEFT_ARROW, 'left' );
 		ig.input.bind( ig.KEY.RIGHT_ARROW, 'right' );
 		ig.input.bind( ig.KEY._1, 'Spell_1' );
+		ig.input.bind( ig.KEY._2, 'Spell_2' );
 		
 		ig.input.bind(ig.KEY.MOUSE1, 'checkClick');
 		
@@ -48,6 +54,8 @@ MyGame = ig.Game.extend({
 		//this.loadLevel( LevelTest );
 		
 		this.Player = this.spawnEntity("EntityDeity", -50, 0);
+		this.UI = new EntityUI_Battle;
+		this.Paddle = this.spawnEntity("EntityPaddle", 400, 450);
 		this.defeat = false;
 		this.victory = false;
 	},
@@ -56,15 +64,13 @@ MyGame = ig.Game.extend({
 		// Update all entities and backgroundMaps
 		this.parent();
 		
-		var paddle = ig.game.getEntitiesByType( EntityPaddle )[0];
-		
-		// Launch a Fireball spell if player presses the Spell_1 button
+		// Respond to numbered keys for casting spells
 		if( ig.input.pressed('Spell_1') ) {
-			if (this.Player.Divinity_Current > 0){
-				this.spawnEntity( 'EntityBall_Spell_Fire1',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
-				this.Player.Divinity_Current -= 1;
-			}
-			
+			this.Player.spellbook[0].cast();
+		}
+		
+		if( ig.input.pressed('Spell_2') ) {
+			this.Player.spellbook[1].cast();
 		}
 		
 		var buttons = ig.game.getEntitiesByType( 'EntityButton');
@@ -78,9 +84,9 @@ MyGame = ig.Game.extend({
 		// Check to make sure there is at least one ball in play, spawn a new one if not
 		var balls = ig.game.getEntitiesByType( 'EntityBall' );
 		var numBalls = balls.length;
-		
+		var p = this.Paddle;
 		if (numBalls < 1 && !this.victory && !this.defeat){
-			this.spawnEntity( 'EntityBall',  paddle.pos.x + (paddle.size.x /2), paddle.pos.y - 50);
+			this.spawnEntity( 'EntityBall',  p.pos.x + (p.size.x /2), p.pos.y - 50);
 			var newBall = this.entities[this.entities.length -1];
 			
 			if (newBall.pos.x < 0){
@@ -91,11 +97,6 @@ MyGame = ig.Game.extend({
 				newBall.pos.x -= 100;
 			}
 		}
-		
-		// Update Meters
-		var p = this.Player
-		p.faithMeter.currentVal = p.Faith_Current;
-		p.divinityMeter.currentVal = p.Divinity_Current;
 	},
 	
 	draw: function() {
@@ -141,14 +142,42 @@ MyGame = ig.Game.extend({
 		}
 		
 		// reinitialize the player entity
-		this.Player = null;
-		this.Player = this.spawnEntity("EntityDeity", -50, 0);
+		this.Player.kill();
 		
 		this.Btn_Reset = this.spawnEntity( 'EntityButton',  550, 450);
 		this.Btn_Reset.displayTxt = "Reset";
 		this.Btn_Reset.btnAction = function(){
 			ig.game.initLevel();
 		};
+	},
+	
+	changeDivinity: function(change){
+		var p = this.Player
+		p.Divinity_Current += change;
+		this.UI.divinityMeter.currentVal += change;
+		
+		if(p.Divinity_Current >p.Divinity_Max){
+			p.Divinity_Current = p.Divinity_Max;
+			this.UI.divinityMeter.currentVal = p.Divinity_Current;
+		}
+	},
+	
+	changeFaith: function(change){
+		this.Player.Faith_Current += change;
+		this.UI.faithMeter.currentVal += change;
+		this.Player.checkEXP();
+	},
+	
+	changeVillageHealth: function(change){
+		var v = this.Player.Village;
+		this.Player.Village.receiveDamage(change);
+		this.UI.vHealthMeter.currentVal -= change;
+		
+		if(v.health > v.max_health){
+			v.health = v.max_health;
+			this.UI.vHealthMeter.currentVal = v.health;
+		}
+		
 	}
 });
 

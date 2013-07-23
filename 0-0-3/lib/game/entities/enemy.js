@@ -34,7 +34,7 @@ EntityEnemy= ig.Entity.extend({
 	
 	kill: function() {
 		// Reward player with FP reward
-		ig.game.Player.Faith_Current += this.FP_Reward;
+		ig.game.changeFaith(this.FP_Reward);
 		
 		// Spawn Floaty Text displaying FP reward
 		ig.game.spawnEntity( 'EntityText_Floating',  this.pos.x , this.pos.y + 50);
